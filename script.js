@@ -8,7 +8,7 @@ new Lynx.Page()
       .OnClick((element) => {
         const ripple = document.createElement("div");
         ripple.classList.add("ripple");
-        element.appendChild(ripple);
+        this.appendChild(ripple);
         setTimeout(() => {
           ripple.remove();
         }, 1500);

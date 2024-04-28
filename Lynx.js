@@ -60,10 +60,10 @@ export class AttrChain {
         case "classlist":
           elem.classList.add(...attrNode.value);
           break;
-        case "onclick":
-          console.log(attrNode.value);
-          elem.addEventListener("click", attrNode.value.bind(null, elem));
-          break;
+        // case "onclick":
+        //   console.log(attrNode.value);
+        //   elem.addEventListener("click", attrNode.value.bind(null, elem));
+        //   break;
         default:
           elem[attrNode.type] = attrNode.value;
           break;
