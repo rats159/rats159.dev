@@ -1,0 +1,51 @@
+*::before,
+*::after,
+* {
+  box-sizing: border-box;
+}
+* {
+  color: white;
+  min-width: 0px;
+}
+
+:root {
+  --bg-color: hsl(212, 60%, 44%);
+}
+
+body {
+  background: var(--bg-color);
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  display: grid;
+  place-items: center;
+}
+
+.lilly {
+  background: #138b23;
+  padding: 2em;
+  aspect-ratio: 1;
+  border-radius: 100vmax;
+  border: 0;
+  position: relative;
+}
+.ripple {
+  display: block;
+  position: absolute;
+  inset: 0;
+  animation: border-ripple 1500ms cubic-bezier(0, 0, 0.25, 1) forwards;
+  outline: 20px solid color-mix(in srgb, var(--bg-color), black 10%);
+  border-radius: inherit;
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes border-ripple {
+  from {
+    outline-offset: 0px;
+    outline-width: 20px;
+  }
+  to {
+    outline-offset: 50rem;
+    outline-width: 0px;
+  }
+}
