@@ -1,6 +1,26 @@
+/*
+  hi this is lynx
+  i made it myself
+  its private on github
+  take this code if you want
+  ill publish it one day
+  but for right now it's pretty bad
+  so i wouldnt reccomend it
+*/
 export class ElementChain {
   constructor() {
     this.nodes = [];
+  }
+
+  _elem(
+    attributes = new AttrChain(),
+    children = new ElementChain(),
+    name = "div"
+  ) {
+    const element = document.createElement(name);
+    this.nodes.push(attributes.apply(element));
+    element.append(...children.render());
+    return this;
   }
 
   render() {
@@ -17,33 +37,64 @@ export class ElementChain {
     return this;
   }
 
-  H1(attrChain) {
-    this.nodes.push(attrChain.apply(document.createElement("h1")));
+  Text(txt) {
+    this.nodes.push(new Text(txt));
     return this;
   }
 
-  H3(attrChain) {
-    this.nodes.push(attrChain.apply(document.createElement("h3")));
-    return this;
+  Header({ attributes, children } = {}) {
+    return this._elem(attributes, children, "header");
   }
 
-  Button(attrChain, children) {
-    const element = attrChain.apply(document.createElement("button"));
-    if (children != undefined) {
-      element.append(...children.render());
-    }
-    this.nodes.push(element);
-    return this;
+  Nav({ attributes, children } = {}) {
+    return this._elem(attributes, children, "nav");
   }
 
-  P(attrChain) {
-    this.nodes.push(attrChain.apply(document.createElement("p")));
-    return this;
+  A({ attributes, children } = {}) {
+    return this._elem(attributes, children, "a");
   }
 
-  Span(attrChain) {
-    this.nodes.push(attrChain.apply(document.createElement("span")));
-    return this;
+  H1({ attributes, children } = {}) {
+    return this._elem(attributes, children, "h1");
+  }
+
+  H2({ attributes, children } = {}) {
+    return this._elem(attributes, children, "h2");
+  }
+
+  H3({ attributes, children } = {}) {
+    return this._elem(attributes, children, "h3");
+  }
+
+  H4({ attributes, children } = {}) {
+    return this._elem(attributes, children, "h4");
+  }
+
+  H5({ attributes, children } = {}) {
+    return this._elem(attributes, children, "h5");
+  }
+
+  H6({ attributes, children } = {}) {
+    return this._elem(attributes, children, "h6");
+  }
+
+  Button({ attributes, children } = {}) {
+    return this._elem(attributes, children, "button");
+  }
+
+  P({ attributes, children } = {}) {
+    return this._elem(attributes, children, "p");
+  }
+
+  Span({ attributes, children } = {}) {
+    return this._elem(attributes, children, "span");
+  }
+
+  Main({ attributes, children } = {}) {
+    return this._elem(attributes, children, "main");
+  }
+  Section({ attributes, children } = {}) {
+    return this._elem(attributes, children, "section");
   }
 }
 
@@ -60,10 +111,10 @@ export class AttrChain {
         case "classlist":
           elem.classList.add(...attrNode.value);
           break;
-        // case "onclick":
-        //   console.log(attrNode.value);
-        //   elem.addEventListener("click", attrNode.value.bind(null, elem));
-        //   break;
+        case "onclick":
+          console.log(attrNode.value);
+          elem.addEventListener("click", attrNode.value.bind(null, elem));
+          break;
         default:
           elem[attrNode.type] = attrNode.value;
           break;
@@ -82,6 +133,11 @@ export class AttrChain {
     return this;
   }
 
+  ID(id) {
+    this.nodes.push({ type: "id", value: id });
+    return this;
+  }
+
   Text(value) {
     this.nodes.push({ type: "textContent", value });
     return this;
@@ -89,6 +145,11 @@ export class AttrChain {
 
   OnClick(value) {
     this.nodes.push({ type: "onclick", value });
+    return this;
+  }
+
+  HREF(value) {
+    this.nodes.push({ type: "href", value });
     return this;
   }
 
@@ -107,15 +168,21 @@ export class Page extends ElementChain {
 }
 
 export class Solo {
-  constructor(attr, chain) {
+  constructor({
+    attr = new AttrChain(),
+    children = new ElementChain(),
+    element = "div",
+  }) {
     this.attr = attr;
-    this.chain = chain;
+    this.children = children;
+    this.element = element;
+    console.log(...children.render());
   }
 
   render() {
-    const element = this.attr.apply(document.createElement("div"));
-    element.append(...this.chain.render());
-    return element;
+    const element = this.attr.apply(document.createElement(this.element));
+    element.append(...this.children.render());
+    return [element];
   }
 }
 

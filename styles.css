@@ -1,51 +1,116 @@
-*::before,
-*::after,
-* {
+/*
+    DigitalOcean Minimal CSS Reset
+    https://www.digitalocean.com/community/tutorials/css-minimal-css-reset
+*/
+
+html {
   box-sizing: border-box;
-}
-* {
-  color: white;
-  min-width: 0px;
+  font-size: 16px;
 }
 
-:root {
-  --bg-color: hsl(212, 60%, 44%);
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+  font-family: system-ui, sans-serif;
+  color: white;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+/* Actual Styling */
+@keyframes blinking-cursor {
+  10%,
+  90% {
+    opacity: 1;
+  }
+  40%,
+  60% {
+    opacity: 0;
+  }
 }
 
 body {
-  background: var(--bg-color);
-  font-family: system-ui, sans-serif;
-  margin: 0;
-  display: grid;
-  place-items: center;
+  margin: 0 2rem;
+  background-color: #222;
 }
 
-.lilly {
-  background: #138b23;
-  padding: 2em;
-  aspect-ratio: 1;
-  border-radius: 100vmax;
-  border: 0;
-  position: relative;
+header {
+  padding-top: 2em;
 }
-.ripple {
-  display: block;
-  position: absolute;
-  inset: 0;
-  animation: border-ripple 1500ms cubic-bezier(0, 0, 0.25, 1) forwards;
-  outline: 20px solid color-mix(in srgb, var(--bg-color), black 10%);
-  border-radius: inherit;
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  font-family: "Consolas", Courier, monospace;
+  color: white;
+  font-weight: 900;
+
+  &::after {
+    content: "|";
+    animation: blinking-cursor 1000ms ease-in-out infinite;
+  }
+}
+
+nav {
   width: 100%;
-  height: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  height: 4rem;
+  align-items: center;
 }
 
-@keyframes border-ripple {
-  from {
-    outline-offset: 0px;
-    outline-width: 20px;
+.inline {
+  display: inline;
+}
+
+.link {
+  color: #fff;
+
+  &:visited {
+    color: #ddd;
   }
-  to {
-    outline-offset: 50rem;
-    outline-width: 0px;
-  }
+
+  font-weight: 600;
+}
+
+.comment {
+  color: hsl(0, 0%, 39%);
+  font-family: "Consolas", Courier, monospace;
+  font-weight: 800;
+}
+
+section {
+  width: fit-content;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+article {
+  max-width: 45em;
 }
