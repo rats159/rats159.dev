@@ -1,115 +1,129 @@
 /*
-    DigitalOcean Minimal CSS Reset
+    (Modified) DigitalOcean Minimal CSS Reset
     https://www.digitalocean.com/community/tutorials/css-minimal-css-reset
 */
 
 html {
-  box-sizing: border-box;
-  font-size: 16px;
+    box-sizing: border-box;
+    font-size: 16px;
 }
 
 *,
 *:before,
 *:after {
-  box-sizing: inherit;
+    box-sizing: inherit;
 }
 
 body,
+p,
+ol,
+ul {
+    margin: 0;
+    padding: 0;
+    font-weight: normal;
+    font-family: system-ui, sans-serif;
+    color: #fff;
+}
+
 h1,
 h2,
 h3,
 h4,
 h5,
-h6,
-p,
-ol,
-ul {
-  margin: 0;
-  padding: 0;
-  font-weight: normal;
-  font-family: system-ui, sans-serif;
-  color: #fff;
-}
-
-ol,
-ul {
-  list-style: none;
+h6 {
+    margin-bottom: 0.5em;
 }
 
 img {
-  max-width: 100%;
-  height: auto;
+    max-width: 100%;
+    height: auto;
 }
 /* Actual Styling */
+
 @keyframes blinking-cursor {
-  10%,
-  90% {
-    opacity: 1;
-  }
-  40%,
-  60% {
-    opacity: 0;
-  }
+    10%,
+    90% {
+        opacity: 1;
+    }
+    40%,
+    60% {
+        opacity: 0;
+    }
 }
 
 body {
-  margin: 0 2rem;
-  background-color: #222127;
+    margin: 0 2rem;
+    background-color: #222127;
 }
 
 header {
-  padding-top: 2em;
+    padding-top: 2em;
 }
 h1 {
-  text-align: center;
-  font-size: 2rem;
-  font-family: "Consolas", Courier, monospace;
-  font-weight: 900;
+    text-align: center;
+    font-size: 2rem;
+    font-family: "Consolas", Courier, monospace;
+    font-weight: 900;
 
-  &::after {
-    content: "|";
-    animation: blinking-cursor 1000ms ease-in-out infinite;
-  }
+    &::after {
+        content: "|";
+        animation: blinking-cursor 1000ms ease-in-out infinite;
+    }
 }
 
 nav {
-  width: 100%;
-  display: flex;
-  justify-content: space-evenly;
-  height: 4rem;
-  align-items: center;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    height: 4rem;
+    align-items: center;
 }
 
 .inline {
-  display: inline;
+    display: inline;
 }
 
 .link {
-  color: #fff;
+    color: #fff;
 
-  &:visited {
-    color: #ddd;
-  }
+    &:visited {
+        color: #ddd;
+    }
 
-  font-weight: 600;
+    font-weight: 600;
 }
 
 .comment {
-  color: hsl(0, 0%, 39%);
-  font-family: "Consolas", Courier, monospace;
-  font-weight: 800;
+    color: hsl(0, 0%, 39%);
+    font-family: "Consolas", Courier, monospace;
+    font-weight: 800;
 }
 
 section {
-  width: fit-content;
+    width: fit-content;
 }
 
 main {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
 }
 
 article {
-  max-width: 45em;
+    max-width: 45em;
+}
+
+.special {
+    font-weight: 600;
+}
+
+.mono {
+    font-family: monospace;
+}
+
+ul,
+ol {
+    list-style: disc;
+    margin: 1em 2em;
 }
