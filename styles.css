@@ -52,7 +52,7 @@ img {
 }
 
 body {
-    margin: 0 2rem;
+    margin: 0 2rem 2rem 2rem;
     background-color: #222127;
 }
 
@@ -111,7 +111,7 @@ main {
 }
 
 article {
-    max-width: 45em;
+    width: 45em;
 }
 
 .special {
