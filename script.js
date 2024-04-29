@@ -36,12 +36,6 @@ new Lynx.Page()
               .Text("About the site")
               .HREF("#site")
               .Class("link"),
-          })
-          .A({
-            attributes: new Lynx.AttrChain()
-              .Text("Home")
-              .HREF("#")
-              .Class("link"),
           }),
       }),
   })
