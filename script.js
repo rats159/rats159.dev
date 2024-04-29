@@ -1,78 +1,10 @@
 import * as Lynx from "./Lynx.js";
-import { typeout } from "./typeout.js";
-
-function Comment(text) {
-    return () => {
-        return new Lynx.Solo({
-            element: "p",
-            attributes: new Lynx.AttrChain().Class("comment").Text(text),
-        });
-    };
-}
-
-function Link(href, text) {
-    return () => {
-        return new Lynx.Solo({
-            attributes: new Lynx.AttrChain()
-                .HREF(href)
-                .Text(text)
-                .Class("link"),
-            element: "a",
-        });
-    };
-}
-
-function ListItem(text) {
-    return () => {
-        return new Lynx.Solo({
-            element: "li",
-            attributes: new Lynx.AttrChain().Text(text),
-        });
-    };
-}
-
-function List(...items) {
-    return () => {
-        return new Lynx.Solo({
-            element: "ul",
-            children: new Lynx.ElementChain().Many(
-                ...items.map((item) => {
-                    return ListItem(item);
-                })
-            ),
-        });
-    };
-}
-
-function Section(id, title, content) {
-    return () => {
-        return new Lynx.Solo({
-            element: "section",
-            attributes: new Lynx.AttrChain().ID(id),
-            children: new Lynx.Solo({
-                element: "article",
-                children: new Lynx.ElementChain()
-                    .H2({
-                        attributes: new Lynx.AttrChain().Text(title),
-                    })
-                    .Component(() => content),
-            }),
-        });
-    };
-}
+import { Link, List, Section, Comment, TypeWriter } from "./components.js";
 
 new Lynx.Page()
     .Header({
         children: new Lynx.ElementChain()
-            .H1({
-                attributes: new Lynx.AttrChain()
-                    .Text("Hello, World!")
-                    .Immediate((element) => {
-                        typeout("Hello, World!", 100, (text) => {
-                            element.textContent = text;
-                        });
-                    }),
-            })
+            .Component(TypeWriter("Hi, I'm Rats!", 100, "h1"))
             .Nav({
                 children: new Lynx.ElementChain()
                     .Component(Link("#about", "About me"))
@@ -102,14 +34,30 @@ new Lynx.Page()
 
                         .Component(Link("#projects", "my projects"))
                         .Text(
-                            ". I'm mainly a Java and web dev, but I have at least some experience in all of the following languages:"
+                            ". I'm mainly a Java and Web developer, but I have at least some experience in all of the following languages:"
                         )
                         .Component(
                             List(
                                 "Java",
-                                "The web trio (css,js,html)",
+                                "TypeScript",
+                                "The web trio (CSS,JS,HTML)",
                                 "C",
                                 "Rust"
+                            )
+                        )
+                        .Text(
+                            "There are a lot of things I've been meaning to try. This includes but is not limited to:"
+                        )
+                        .Component(
+                            List(
+                                "C++",
+                                "C#",
+                                "Go",
+                                "Gleam",
+                                "Haskell",
+                                "React",
+                                "SolidJS",
+                                "TailwindCSS"
                             )
                         )
                         .Component(Comment("//TODO: Expand this"))
