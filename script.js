@@ -95,6 +95,11 @@ new Lynx.Page()
                                     "Palladium",
                                     "Mini-Scrabble"
                                 )
+                            )
+                            .Component(
+                                Comment(
+                                    "//TODO: Finish anything. Literally just one thing."
+                                )
                             ),
                     })
                 )
