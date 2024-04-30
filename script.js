@@ -1,5 +1,12 @@
 import * as Lynx from "./Lynx.js";
-import { Link, List, Section, Comment, TypeWriter } from "./components.js";
+import {
+    Link,
+    List,
+    Section,
+    Comment,
+    TypeWriter,
+    RainbowLink,
+} from "./components.js";
 
 new Lynx.Page()
     .Header({
@@ -79,9 +86,16 @@ new Lynx.Page()
                     "My Projects:",
                     new Lynx.Solo({
                         element: "p",
-                        attributes: new Lynx.AttrChain().Text(
-                            "Under Construction"
-                        ),
+                        children: new Lynx.ElementChain()
+                            .Text("Ongoing:")
+                            .Component(
+                                List(
+                                    "This site",
+                                    "Lynx (see below)",
+                                    "Palladium",
+                                    "Mini-Scrabble"
+                                )
+                            ),
                     })
                 )
             )
@@ -91,13 +105,20 @@ new Lynx.Page()
                     "About the Site:",
                     new Lynx.Solo({
                         element: "p",
-                        attributes: new Lynx.AttrChain().Text(
-                            "Under Construction"
-                        ),
+                        children: new Lynx.ElementChain()
+                            .Text("This site is built using ")
+                            .Component(RainbowLink("Lynx", "/lynx"))
+                            .Text(
+                                ". A library I built to make component-based web building faster, easier, and immediate."
+                            )
+                            .Text(
+                                " With Lynx, there's no compiler step, build step, or heavy libraries."
+                            )
+                            .Text(
+                                " Lynx is built on method chaining, so the entire site collapses into one call and runs immediately on page load."
+                            ),
                     })
                 )
             ),
-        // .Component(Section("projects", "My Projects:"))
-        // .Component(Section("site", "About the Site:")),
     })
     .render();

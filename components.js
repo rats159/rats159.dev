@@ -63,19 +63,33 @@ export function TypeWriter(text, delay = 100, element = "p") {
     return () =>
         new Lynx.Solo({
             element,
-            attributes: new Lynx.AttrChain().Immediate((element) => {
-                async function typeout(string) {
-                    if (string == "") {
-                        return;
+            attributes: new Lynx.AttrChain()
+                .Immediate((element) => {
+                    async function typeout(string) {
+                        if (string == "") {
+                            return;
+                        }
+                        await typeout(string.substring(0, string.length - 1));
+                        element.textContent = string;
+                        return new Promise(async (resolve) => {
+                            setTimeout(resolve, delay);
+                        });
                     }
-                    await typeout(string.substring(0, string.length - 1));
-                    element.textContent = string;
-                    return new Promise(async (resolve) => {
-                        setTimeout(resolve, delay);
-                    });
-                }
 
-                typeout(text);
-            }),
+                    typeout(text);
+                })
+                .Class("typewriter"),
         });
+}
+
+export function RainbowLink(text, href) {
+    return () => {
+        return new Lynx.Solo({
+            element: "a",
+            attributes: new Lynx.AttrChain()
+                .Text(text)
+                .Class("rainbow", "special", "link")
+                .HREF(href),
+        });
+    };
 }

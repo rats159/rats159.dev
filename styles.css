@@ -64,11 +64,11 @@ h1 {
     font-size: 2rem;
     font-family: "Consolas", Courier, monospace;
     font-weight: 900;
+}
 
-    &::after {
-        content: "|";
-        animation: blinking-cursor 1000ms ease-in-out infinite;
-    }
+.typewriter::after {
+    content: "|";
+    animation: blinking-cursor 1000ms ease-in-out infinite;
 }
 
 nav {
@@ -100,7 +100,7 @@ nav {
 }
 
 section {
-    width: fit-content;
+    width: min(100%, 45em);
 }
 
 main {
@@ -111,11 +111,30 @@ main {
 }
 
 article {
-    width: 45em;
+    background: #1c1c20;
+    padding: 1rem 5rem 3rem 5rem;
+    border-radius: 1 em;
 }
 
 .special {
     font-weight: 600;
+}
+
+.rainbow {
+    background: linear-gradient(
+        to bottom right,
+        red,
+        red,
+        orange,
+        yellow,
+        lime,
+        cyan,
+        magenta,
+        magenta
+    );
+    background-clip: text;
+    color: transparent;
+    width: fit-content;
 }
 
 .mono {
