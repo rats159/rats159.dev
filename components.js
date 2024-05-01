@@ -3,7 +3,8 @@ export function Comment(text) {
     return () => {
         return new Lynx.Solo({
             element: "p",
-            attributes: new Lynx.AttrChain().Class("comment").Text(text),
+            attributes: new Lynx.AttributeChain().Class("comment"),
+            children: new Lynx.ElementChain().Text(text),
         });
     };
 }
@@ -11,10 +12,8 @@ export function Comment(text) {
 export function Link(href, text) {
     return () => {
         return new Lynx.Solo({
-            attributes: new Lynx.AttrChain()
-                .HREF(href)
-                .Text(text)
-                .Class("link"),
+            attributes: new Lynx.AttributeChain().HREF(href).Class("link"),
+            children: new Lynx.ElementChain().Text(text),
             element: "a",
         });
     };
@@ -24,7 +23,7 @@ export function ListItem(text) {
     return () => {
         return new Lynx.Solo({
             element: "li",
-            attributes: new Lynx.AttrChain().Text(text),
+            children: new Lynx.ElementChain().Text(text),
         });
     };
 }
@@ -34,7 +33,7 @@ export function List(...items) {
         return new Lynx.Solo({
             element: "ul",
             children: new Lynx.ElementChain().Many(
-                ...items.map((item) => {
+                items.map((item) => {
                     return ListItem(item);
                 })
             ),
@@ -46,12 +45,12 @@ export function Section(id, title, content) {
     return () => {
         return new Lynx.Solo({
             element: "section",
-            attributes: new Lynx.AttrChain().ID(id),
+            attributes: new Lynx.AttributeChain().ID(id),
             children: new Lynx.Solo({
                 element: "article",
                 children: new Lynx.ElementChain()
                     .H2({
-                        attributes: new Lynx.AttrChain().Text(title),
+                        children: new Lynx.ElementChain().Text(title),
                     })
                     .Component(() => content),
             }),
@@ -63,7 +62,7 @@ export function TypeWriter(text, delay = 100, element = "p") {
     return () =>
         new Lynx.Solo({
             element,
-            attributes: new Lynx.AttrChain()
+            attributes: new Lynx.AttributeChain()
                 .Immediate((element) => {
                     async function typeout(string) {
                         if (string == "") {
@@ -86,10 +85,10 @@ export function RainbowLink(text, href) {
     return () => {
         return new Lynx.Solo({
             element: "a",
-            attributes: new Lynx.AttrChain()
-                .Text(text)
+            attributes: new Lynx.AttributeChain()
                 .Class("rainbow", "special", "link")
                 .HREF(href),
+            children: new Lynx.ElementChain().Text(text),
         });
     };
 }

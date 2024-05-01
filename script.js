@@ -32,9 +32,13 @@ new Lynx.Page()
                                 `Most people call me rats. I've been programming for around `
                             )
                             .Span({
-                                attributes: new Lynx.AttrChain()
-                                    .Text(new Date().getFullYear() - 2020)
-                                    .Class("special", "mono"),
+                                attributes: new Lynx.AttributeChain().Class(
+                                    "special",
+                                    "mono"
+                                ),
+                                children: new Lynx.ElementChain().Text(
+                                    new Date().getFullYear() - 2020
+                                ),
                             })
                             .Text(
                                 ` years now. For more about what I've done with that time, check out `
@@ -72,11 +76,6 @@ new Lynx.Page()
                             .Component(
                                 Comment("//TODO: Start caring about TODOs")
                             ),
-                        // .Ul({
-                        //     children: new Lynx.ElementChain().Li({
-                        //         attributes: new Lynx.AttrChain().Text("Java"),
-                        //     }),
-                        // }),
                     })
                 )
             )
@@ -121,6 +120,26 @@ new Lynx.Page()
                             )
                             .Text(
                                 " Lynx is built on method chaining, so the entire site collapses into one call and runs immediately on page load."
+                            )
+                            .Text(
+                                " You can kinda install Lynx however you want, I don't have it on npm yet so your best bet might just be copying the code from "
+                            )
+                            .Component(
+                                Link(
+                                    "https://github.com/rats159/Lynx",
+                                    "the github"
+                                )
+                            )
+                            .Br()
+                            .Br()
+                            .Text(
+                                "If you wanna know how this site was built, check the github "
+                            )
+                            .Component(
+                                Link(
+                                    "https://github.com/rats159/rats159.dev",
+                                    "here."
+                                )
                             ),
                     })
                 )
