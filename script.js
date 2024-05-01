@@ -1,4 +1,4 @@
-import * as Lynx from "./Lynx.js";
+import * as Lynx from "./scripts/Lynx.js";
 import {
     Link,
     List,
@@ -6,7 +6,7 @@ import {
     Comment,
     TypeWriter,
     RainbowLink,
-} from "./components.js";
+} from "./scripts/components.js";
 
 new Lynx.Page()
     .Header({

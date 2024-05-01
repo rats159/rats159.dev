@@ -1,0 +1,49 @@
+* {
+    font-family: system-ui, sans-serif;
+    color: white;
+}
+
+body {
+    background-color: #111;
+    margin: 0;
+}
+
+.rainbow {
+    background: linear-gradient(
+        to bottom right,
+        red,
+        red,
+        orange,
+        yellow,
+        lime,
+        cyan,
+        magenta,
+        magenta
+    );
+    background-clip: text;
+    color: transparent;
+    width: fit-content;
+}
+
+h1 {
+    /* padding: 2rem; */
+    text-align: center;
+    width: fit-content;
+    display: block;
+}
+
+header {
+    text-align: center;
+    display: grid;
+    place-items: center;
+}
+
+.weirdcircle {
+    z-index: -100;
+    display: block;
+    position: absolute;
+    top: var(--y);
+    left: var(--x);
+    box-shadow: 0 0 var(--blurriness) var(--size) var(--color);
+    pointer-events: none;
+}

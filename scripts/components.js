@@ -92,3 +92,33 @@ export function RainbowLink(text, href) {
         });
     };
 }
+
+export function RainbowText(text, element = "p") {
+    return () => {
+        return new Lynx.Solo({
+            element,
+            attributes: new Lynx.AttributeChain().Class("rainbow", "special"),
+            children: new Lynx.ElementChain().Text(text),
+        });
+    };
+}
+
+export function ColorBlob(circleData) {
+    return () =>
+        new Lynx.Solo({
+            attributes: new Lynx.AttributeChain()
+                .Class("weirdcircle")
+                .Style(
+                    `--x:${circleData.x};--y:${circleData.y};--size:${circleData.size};--color:${circleData.color};--blurriness:${circleData.blurriness};`
+                ),
+        });
+}
+
+export function ColorBlobs(circleDatas) {
+    return () => {
+        return new Lynx.Solo({
+            element: "div",
+            children: new Lynx.ElementChain().Many(circleDatas.map(ColorBlob)),
+        });
+    };
+}
