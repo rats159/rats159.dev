@@ -124,12 +124,12 @@ header {
 }
 
 code {
-    font-family: monospace;
+    font-family: "JetBrains Mono";
     background-color: #222;
     padding: 0.5em;
     border-radius: 0.5em;
     display: block;
-    font-size: 1.125em;
+    font-size: 0.8em;
     width: fit-content;
     margin-top: 0.5em;
 }
