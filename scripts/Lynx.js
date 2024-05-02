@@ -2012,7 +2012,7 @@ export class AttributeChain {
      * @param {any} value
      */
     Attribute(name, value) {
-        this.nodes.push({ type: "genericattr", value: { name, value } });
+        this.nodes.push({ type: "name", value: { name, value } });
         return this;
     }
 }

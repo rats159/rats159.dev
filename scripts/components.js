@@ -1,4 +1,6 @@
 import * as Lynx from "./Lynx.js";
+import { getHighlighter } from "https://esm.run/shiki";
+
 export function Comment(text) {
     return () => {
         return new Lynx.Solo({
@@ -154,4 +156,30 @@ export function ColorBlobs(circleDatas) {
             children: new Lynx.ElementChain().Many(circleDatas.map(ColorBlob)),
         });
     };
+}
+
+const hightligher = await getHighlighter({
+    themes: ["github-dark"],
+    langs: ["javascript"],
+});
+
+export function CodeBlock(code) {
+    return () => {
+        return new Lynx.Solo({
+            attributes: new Lynx.AttributeChain().Immediate((elem) => {
+                elem.innerHTML = hightligher.codeToHtml(code, {
+                    lang: "javascript",
+                    theme: "github-dark",
+                });
+            }),
+        });
+    };
+}
+
+export function Unstyled(component) {
+    return () =>
+        new Lynx.Solo({
+            attributes: new Lynx.AttributeChain().Class("unstyled"),
+            children: component,
+        });
 }
