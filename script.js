@@ -111,7 +111,7 @@ new Lynx.Page()
                         element: "p",
                         children: new Lynx.ElementChain()
                             .Text("This site is built using ")
-                            .Component(RainbowLink("Lynx", "/lynx"))
+                            .Component(RainbowLink("Lynx", "/lynx/index.html"))
                             .Text(
                                 ". A library I built to make component-based web building faster, easier, and immediate."
                             )

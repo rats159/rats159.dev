@@ -41,6 +41,39 @@ export function List(...items) {
     };
 }
 
+export function AccordionItem(data) {
+    return () => {
+        return new Lynx.Solo({
+            element: "li",
+            attributes: new Lynx.AttributeChain().Class("collapsible"),
+            children: new Lynx.ElementChain()
+                .Label({
+                    children: new Lynx.ElementChain()
+                        .Input({
+                            attributes: new Lynx.AttributeChain().Type(
+                                "checkbox"
+                            ),
+                            children: new Lynx.ElementChain(),
+                        })
+                        .Text(data.buttonText),
+                })
+                .Component(() => data.innerData),
+        });
+    };
+}
+
+export function AccordionList(data) {
+    return () => {
+        return new Lynx.Solo({
+            element: "ul",
+            attributes: new Lynx.AttributeChain().Class("accordion-list"),
+            children: new Lynx.ElementChain().Many(
+                data.map((d) => AccordionItem(d))
+            ),
+        });
+    };
+}
+
 export function Section(id, title, content) {
     return () => {
         return new Lynx.Solo({

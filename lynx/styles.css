@@ -47,3 +47,107 @@ header {
     box-shadow: 0 0 var(--blurriness) var(--size) var(--color);
     pointer-events: none;
 }
+
+.special {
+    font-weight: bolder;
+}
+
+/* Adapted from kevin powell */
+.collapsible {
+    --padding: 1em;
+    background-color: #333;
+    border-radius: 1em;
+    display: grid;
+    grid-template-rows: calc(1em + 2 * var(--padding)) 0fr;
+
+    &:has(input:checked) {
+        grid-template-rows: calc(1em + 2 * var(--padding)) 1fr;
+
+        label::before {
+            rotate: 90deg;
+        }
+
+        div {
+            padding-block: var(--padding);
+        }
+    }
+
+    div {
+        overflow: hidden;
+        transition: padding-block 500ms;
+        padding: 0 var(--padding);
+    }
+
+    label {
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        padding: var(--padding);
+        position: relative;
+        background-color: #3b3b3b;
+        border-radius: 1em;
+
+        &::before {
+            content: ">";
+            font-family: monospace;
+            font-weight: 900;
+            margin: 0 1em 0 0.5em;
+            transition: rotate 500ms ease;
+        }
+
+        &:has(:focus-visible) {
+            &::before {
+                outline: 2px solid cornflowerblue;
+                outline-offset: 0.25em;
+                border-radius: 0.125em;
+            }
+        }
+
+        input {
+            position: absolute;
+            top: -9999vh;
+        }
+    }
+
+    transition: grid-template-rows 500ms;
+}
+
+.accordion-list {
+    width: fit-content;
+    list-style: none;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    background-color: #444;
+    border-radius: 0.5em;
+}
+
+code {
+    font-family: monospace;
+    background-color: #222;
+    padding: 0.5em;
+    border-radius: 0.5em;
+    display: block;
+    font-size: 1.125em;
+    width: fit-content;
+    margin-top: 0.5em;
+}
+
+body {
+    display: grid;
+    place-items: center;
+}
+main {
+    max-width: 45em;
+}
+
+.link {
+    color: #fff;
+
+    &:visited {
+        color: #ddd;
+    }
+
+    font-weight: 600;
+}
