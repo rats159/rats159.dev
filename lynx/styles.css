@@ -187,8 +187,6 @@ h2 {
     }
 
     width: fit-content;
-    /*older guys*/
-    width: intrinsic;
 
     span.line {
         text-wrap: wrap;
