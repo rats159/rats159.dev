@@ -31,19 +31,10 @@ new Lynx.Page()
                             .Text(
                                 `Most people call me rats. I've been programming for around `
                             )
-                            .Span({
-                                attributes: new Lynx.AttributeChain().Class(
-                                    "special",
-                                    "mono"
-                                ),
-                                children: new Lynx.ElementChain().Text(
-                                    new Date().getFullYear() - 2020
-                                ),
-                            })
+                            .Text(new Date().getFullYear() - 2020)
                             .Text(
                                 ` years now. For more about what I've done with that time, check out `
                             )
-
                             .Component(Link("#projects", "my projects"))
                             .Text(
                                 ". I'm mainly a Java and Web developer, but I have at least some experience in all of the following languages:"
