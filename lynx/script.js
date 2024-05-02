@@ -5,11 +5,11 @@ import {
     AccordionList,
     Link,
     CodeBlock,
+    Code,
     Unstyled,
 } from "../scripts/components.js";
 
 new Page()
-
     .Header({
         children: new ElementChain().Hgroup({
             children: new ElementChain()
@@ -60,25 +60,17 @@ new Page()
                                         .Text(
                                             " and place it alongside your other client-side scripts. Note that we use ESModules, which means you need to import it with either:"
                                         )
-                                        .Code({
-                                            children: new ElementChain().Text(
+                                        .Component(
+                                            Code(
                                                 'import * as Lynx from "./lynx.js"'
-                                            ),
-                                            attributes:
-                                                new AttributeChain().Class(
-                                                    "code"
-                                                ),
-                                        })
+                                            )
+                                        )
                                         .Text(" or ")
-                                        .Code({
-                                            children: new ElementChain().Text(
+                                        .Component(
+                                            Code(
                                                 'import {Page, ElementChain, AttributeChain, Solo, Signal} from "./lynx.js"'
-                                            ),
-                                            attributes:
-                                                new AttributeChain().Class(
-                                                    "code"
-                                                ),
-                                        }),
+                                            )
+                                        ),
                                 }),
                             },
                             {

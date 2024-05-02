@@ -145,6 +145,9 @@ header {
 main {
     background-color: #333;
     padding: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
 }
 
 section {
@@ -167,7 +170,8 @@ h2 {
     font-weight: bolder;
 }
 
-#faq {
+#faq,
+#examples {
     width: auto;
 
     ul {
@@ -182,6 +186,17 @@ h2 {
     * {
         font-family: "JetBrains Mono";
     }
+
+    width: fit-content;
+
+    span.line {
+        text-wrap: wrap;
+        line-break: anywhere;
+    }
+}
+
+.inline-code {
+    font-size: 0.8em;
 }
 
 .unstyled {

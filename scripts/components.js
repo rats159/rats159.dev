@@ -176,6 +176,22 @@ export function CodeBlock(code) {
     };
 }
 
+export function Code(code) {
+    return () => {
+        return new Lynx.Solo({
+            element: "span",
+            attributes: new Lynx.AttributeChain()
+                .Immediate((elem) => {
+                    elem.innerHTML = hightligher.codeToHtml(code, {
+                        lang: "javascript",
+                        theme: "github-dark",
+                    });
+                })
+                .Class("inline-code"),
+        });
+    };
+}
+
 export function Unstyled(component) {
     return () =>
         new Lynx.Solo({
