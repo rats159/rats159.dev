@@ -182,14 +182,13 @@ h2 {
 .shiki {
     padding: 0.5em;
     border-radius: 0.5em;
-
-    width: fit-content;
-
     * {
         font-family: "JetBrains Mono";
     }
 
     width: fit-content;
+    /*older guys*/
+    width: intrinsic;
 
     span.line {
         text-wrap: wrap;
