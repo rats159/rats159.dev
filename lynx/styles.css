@@ -184,6 +184,7 @@ h2 {
     border-radius: 0.5em;
     * {
         font-family: "JetBrains Mono";
+        font-variant-ligatures: none;
     }
 
     width: fit-content;
@@ -196,12 +197,14 @@ h2 {
 
 .inline-code {
     font-size: 0.8em;
+    display: inline;
 }
 
 .unstyled {
     border-radius: 0.5em;
     background-color: white;
     padding: 0.5em;
+
     * {
         font-family: initial;
         color: initial;
@@ -212,5 +215,10 @@ h2 {
     .h1 {
         font-size: 2em;
         font-weight: bold;
+    }
+
+    ul,
+    .ul {
+        margin-inline-start: 1rem;
     }
 }

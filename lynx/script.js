@@ -7,6 +7,7 @@ import {
     CodeBlock,
     Code,
     Unstyled,
+    List,
 } from "../scripts/components.js";
 
 new Page()
@@ -89,8 +90,15 @@ new Page()
                                         .Br()
                                         .Br()
                                         .Text(
-                                            "Long answer? I think that verbosity can be incredibly useful at scale. While I will readily admit that simple tasks in Lynx are far more verbose than they need to be, I believe that at scale, this system shows itself to be self documenting and easier to read than other systems."
-                                        ),
+                                            "Long answer? I think that verbosity can be incredibly useful at scale. While I will readily admit that simple tasks in Lynx are far more verbose than they need to be, I think this is the best way to do it without making my own HTML/XML format. I'm considering transitioning the entire library over to pipelines if "
+                                        )
+                                        .Component(
+                                            Link(
+                                                "https://github.com/tc39/proposal-pipeline-operator",
+                                                "this proposal"
+                                            )
+                                        )
+                                        .Text(" ever gets accepted."),
                                 }),
                             },
                             {
@@ -119,6 +127,9 @@ new Page()
                     .H2({
                         children: new ElementChain().Text("Examples"),
                     })
+                    .H3({
+                        children: new ElementChain().Text("Basic Boilerplate"),
+                    })
                     .Text("Every Lynx project has a little boilerplate:")
                     .Component(
                         CodeBlock(
@@ -145,7 +156,129 @@ new Lynx.Page()
                                 children: new ElementChain().Text("Hello!"),
                             })
                         )
-                    ),
+                    )
+                    .Hr()
+                    .H3({
+                        children: new ElementChain().Text("Nested Elements"),
+                    })
+                    .Text(
+                        "Let's try something a little more advanced, like a list:"
+                    )
+                    .Component(
+                        CodeBlock(`new Lynx.Page()
+    .Ul({
+        children: new Lynx.ElementChain()
+            .Li({children:new Lynx.ElementChain().Text("Hello!")})
+            .Li({children:new Lynx.ElementChain().Text("Hello!")})
+            .Li({children:new Lynx.ElementChain().Text("Hello!")})
+            .Li({children:new Lynx.ElementChain().Text("Hello!")})
+            .Li({children:new Lynx.ElementChain().Text("Hello!")})
+    })
+    .render()`)
+                    )
+                    .Text("Which renders out as:")
+                    .Component(
+                        Unstyled(
+                            new ElementChain().Ul({
+                                children: new ElementChain()
+                                    .Li({
+                                        children: new ElementChain().Text(
+                                            "Hello!"
+                                        ),
+                                    })
+                                    .Li({
+                                        children: new ElementChain().Text(
+                                            "Hello!"
+                                        ),
+                                    })
+                                    .Li({
+                                        children: new ElementChain().Text(
+                                            "Hello!"
+                                        ),
+                                    })
+                                    .Li({
+                                        children: new ElementChain().Text(
+                                            "Hello!"
+                                        ),
+                                    })
+                                    .Li({
+                                        children: new ElementChain().Text(
+                                            "Hello!"
+                                        ),
+                                    }),
+                            })
+                        )
+                    )
+                    .Hr()
+                    .H3({
+                        children: new ElementChain().Text("Components"),
+                    })
+                    .H4({
+                        children: new ElementChain().Text("Creation:"),
+                    })
+                    .Text(
+                        "That last example was okay, but it's kinda a lot of repeated code. "
+                    )
+                    .Text(
+                        'That\'s what Components are for in Lynx. You can make them in pretty much any way you want, but the "canonical" way is with closures.'
+                    )
+                    .Component(
+                        CodeBlock(`// In some other file, say, 'components.js'
+export function List(...items){
+    return () => {
+        return new Lynx.Solo({
+            element: "ul",
+            children: new Lynx.ElementChain().Many(
+                items.map((item) => ListItem(item))
+            ),
+        });
+    }
+}
+                        
+export function ListItem(item){
+    return () => new Lynx.Solo({
+        element:'li',
+        children: new Lynx.ElementChain()
+            .Text(item)
+    })
+}`)
+                    )
+                    .Text(
+                        "In this example, we use Lynx.Solo to create one element. We also use .Many() to append multiple components at once."
+                    )
+                    .H4({
+                        children: new ElementChain().Text("Using:"),
+                    })
+                    .Text("Using a component in Lynx is super easy:")
+                    .Component(
+                        CodeBlock(`import {List} from './components.js'
+                        
+new Lynx.Page()
+    .Component(
+        List(
+            "Hello!",
+            "Hello!",
+            "Hello!",
+            "Hello!",
+            "Hello!"
+        )
+    )`)
+                    )
+                    .Component(
+                        Unstyled(
+                            new ElementChain().Component(
+                                List(
+                                    "Hello!",
+                                    "Hello!",
+                                    "Hello!",
+                                    "Hello!",
+                                    "Hello!"
+                                )
+                            )
+                        )
+                    )
+                    .Hr()
+                    .H2({}),
             }),
     })
     .render();

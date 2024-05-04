@@ -161,6 +161,7 @@ export function ColorBlobs(circleDatas) {
 const hightligher = await getHighlighter({
     themes: ["github-dark"],
     langs: ["javascript"],
+    ligatures: false,
 });
 
 export function CodeBlock(code) {
