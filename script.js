@@ -45,7 +45,8 @@ new Lynx.Page()
                                     "TypeScript",
                                     "The web trio (CSS,JS,HTML)",
                                     "C",
-                                    "Rust"
+                                    "C#",
+                                    "React"
                                 )
                             )
                             .Text(
@@ -54,11 +55,10 @@ new Lynx.Page()
                             .Component(
                                 List(
                                     "C++",
-                                    "C#",
+                                    "Rust",
                                     "Go",
                                     "Gleam",
                                     "Haskell",
-                                    "React",
                                     "SolidJS",
                                     "TailwindCSS"
                                 )
