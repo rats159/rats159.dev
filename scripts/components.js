@@ -1,5 +1,5 @@
 import * as Lynx from "./Lynx.js";
-import { getHighlighter } from "https://esm.run/shiki";
+import { createHighlighter } from "https://esm.run/shiki";
 
 export function Comment(text) {
     return () => {
@@ -158,7 +158,7 @@ export function ColorBlobs(circleDatas) {
     };
 }
 
-const hightligher = await getHighlighter({
+const hightligher = await createHighlighter({
     themes: ["github-dark"],
     langs: ["javascript"],
     ligatures: false,
