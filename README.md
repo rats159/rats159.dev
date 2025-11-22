@@ -1,2 +1,2 @@
-# Hi, I'm rats!
-I just recently turned 18 (at time of writing at least), so I felt like it might be a good idea to get a personal website up and running. It's built using Lynx. I dunno what else to add.
+# rats159.dev
+Basic personal website
