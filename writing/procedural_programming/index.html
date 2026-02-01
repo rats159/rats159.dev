@@ -1,0 +1,225 @@
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="UTF-8" />
+            <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1.0"
+            />
+            <style>
+            	body {
+    background-color: #111;
+    font-family: sans-serif;
+    display: grid;
+    place-items: center;
+    color: #ccc;
+    line-height: 1.5em;
+    flex-direction: column;
+}
+
+h2 {
+    margin-top: 2em;
+}
+
+code {
+    font-family: "JetBrains Mono NL", monospace;
+}
+
+pre {
+    width: fit-content;
+    padding: 1em;
+    border-radius: 1em;
+    line-height: 1.25em;
+    white-space: pre-wrap;
+    background-color: #1e1e1e;
+    color: #bbbbbb;
+}
+
+:not(pre) > code {
+    background-color: #1e1e1e;
+    padding: 0.125em;
+}
+
+article {
+    max-width: 80ch;
+}
+
+.keyword {
+    color: #cf8e6d;
+}
+
+.type {
+    color: #6fafbd
+}
+
+.constant {
+    color: #c77dbb
+}
+
+.string {
+    color: #6aab73
+}
+
+.number {
+    color: #2aacb8
+}
+
+.comment {
+    color: #7a7e85
+}
+
+.call {
+    color: #56a8f5
+}
+            </style>
+        </head>
+        <body>
+            <article>
+            <h1>Procedural programming is always enough.</h1><p>The other day, I saw <a href="https://www.youtube.com/watch?v=anbdaVBQT14">this</a> video, "Procedural Programming Is Not Enough."</p><p>Honestly, I agree with the contents of the video, but I disagree with the takeaway, that the problem was procedural programming. To briefly summarize the video, consider how you might represent a simplified model of a "move" from a game like pokemon. The initial procedural solution shown is along the lines of this:</p><pre class='cs'><code><span class="keyword">class</span> <span class="type">Attack</span> {
+	<span class="keyword">public</span> <span class="keyword">string</span> <span class="constant">name</span>;
+	<span class="keyword">public</span> <span class="keyword">float</span> <span class="constant">accuracy</span>;
+	<span class="keyword">public</span> <span class="keyword">int</span> <span class="constant">damage</span>;
+	<span class="keyword">public</span> <span class="keyword">int</span> <span class="constant">roundsPoisoned</span>;
+	<span class="keyword">public</span> <span class="keyword">bool</span> <span class="constant">makesContact</span>;
+
+	<span class="keyword">public</span> <span class="call">Attack</span>(
+		<span class="keyword">string</span> name, 
+		<span class="keyword">float</span> accuracy, 
+		<span class="keyword">int</span> damage, 
+		<span class="keyword">int</span> roundsPoisoned, 
+		<span class="keyword">bool</span> makesContact
+	) {
+		<span class="comment">// ...</span>
+	}
+}
+</code></pre><p>The main argument is that procedural programming fails here, because it forces every attack to consider data that it would never deal with. If I wanted to add a new field, like <code>roundsBurned</code> or <code>roundsParalyzed</code>, every single move is forced to consider those fields, even if they never touch them. This could be especially problematic the more types of effects there are, such as causing rain, putting enemies to sleep, or modifying the stats of the attacker, or of the enemy.</p><p>The approach that's being taken here is usually called a "megastruct" or a "fat struct", where you use one struct to represent everything. Empirically, it does work in a lot of cases, but this isn't one of them in my opinion. There are enough moves that do enough different things, that it would be wrong to force them into one struct. In the video, he solves the problem with using interfaces, which is what I'd do in an object-oriented language as well.</p><p>You'll notice that I defined Attack as a class, and that's because the video focuses on "using a procedural style in an object-oriented language". I won't be doing this, because my goal is to showcase what procedural programming really looks like, which requires features not present in most OOP languages (mainly tagged unions and function pointers). So as a first step, let's rewrite it in Odin, which I consider to be the epitome of procedural programming amongst modern languages:</p><pre class='odin'><code><span class="type">Attack</span> :: <span class="keyword">struct</span> {
+	<span class="constant">name</span>: <span class="keyword">string</span>,
+	<span class="constant">accuracy</span>: <span class="keyword">f32</span>,
+	<span class="constant">damage</span>: <span class="keyword">i32</span>,
+	<span class="constant">rounds_poisoned</span>: <span class="keyword">i32</span>,
+	<span class="constant">makes_contact</span>: <span class="keyword">bool</span>
+}
+</code></pre><p>So for starters, the first thing I'd do is consider if this really is enough. Odin default initializes everything to 0, so even if there were more fields I didn't care about leaving them as 0 is fine. No matter how many other <code>rounds_*</code> fields I add, if they all stay zeroed, nothing bad happens.</p><pre class='odin'><code>scratch := <span class="type">Attack</span> {
+	name = <span class="string">"Scratch"</span>,
+	damage = <span class="number">40</span>,
+	accuracy = <span class="number">1</span>,
+	makes_contact = <span class="keyword">true</span>
+}
+</code></pre><p>Since scratch doesn't inflict any effects, we just omit them from our initializer. Still though, it would get annoying to manage having several different types of effects. Our attacking procedure may look something like this:</p><pre class='odin'><code><span class="call">do_attack</span> :: <span class="keyword">proc</span>(attack: <span class="type">Attack</span>, target: ^<span class="type">Pokemon</span>) {
+	<span class="keyword">if</span> !<span class="call">hit</span>(attack) <span class="keyword">do</span> <span class="keyword">return</span>
+
+	target.health -= attack.damage
+
+	target.rounds_poisoned += attack.rounds_poisoned
+	target.rounds_paralyzed += attack.rounds_paralyzed
+	target.rounds_burned += attack.rounds_burned
+	target.rounds_sleeping += attack.rounds_sleeping
+	target.rounds_frozen += attack.rounds_frozen
+	target.rounds_confused += attack.rounds_confused
+}
+</code></pre><p>And again, this code is "fine", it would work and is readable, but there's definetly room to improve. Ideally, there'd be an enum to represent status effects, that way new ones can be added easily, and represnted without modifying attacks or pokemon, so let's do just that:</p><pre class='odin'><code><span class="type">Status_Effect_Type</span> :: <span class="keyword">enum</span> {
+	<span class="type">Poison</span>,
+	<span class="type">Paralysis</span>,
+	<span class="constant">Burn</span>,
+	<span class="type">Sleep</span>,
+	<span class="constant">Freeze</span>,
+	<span class="constant">Confusion</span>
+}
+</code></pre><p>Then we modify our attack struct to store a slice of effects</p><pre class='odin'><code><span class="type">Status_Effect</span> :: <span class="keyword">struct</span> {
+	<span class="constant">type</span>: <span class="type">Status_Effect_Type</span>,
+	<span class="constant">duration</span>: <span class="keyword">i32</span>
+}
+
+<span class="type">Attack</span> :: <span class="keyword">struct</span> {
+	<span class="constant">name</span>: <span class="keyword">string</span>,
+	<span class="constant">accuracy</span>: <span class="keyword">f32</span>,
+	<span class="constant">damage</span>: <span class="keyword">i32</span>,
+	<span class="constant">status_effects</span>: []<span class="type">Status_Effect</span>,
+	<span class="constant">makes_contact</span>: <span class="keyword">bool</span>
+}
+</code></pre><p>We aren't looking at the pokemon struct here, but it could use an enumerated array to efficiently and automatically store all of its effects. Again, we could probably stop here, but let's go further and see if we can get that object-oriented extensibility that people love so much. Let's say you have a new type of move, one that affects the user of the move, rather than the enemy.</p><p>We could take the "dumb" approach, throwing even more new fields into the <code>Attack</code> struct, but that's wasting space, and could perhaps be error prone, depending on the handling code. Instead, let's use a <code>union</code>. Unions serve a similar purpose to interfaces, except they directly state all of their variants at their declaration. Since you always know the exact types that a union may hold, you can put whatever data you want in the variants, rather than having to rely on shared method implementations. It's a bit like <code>sealed interface Foo permits A, B, C</code>, and then using <code>switch</code> pattern matching to check if it's an <code>A</code>, <code>B</code>, or <code>C</code> in Java. Here's how I'd refactor the code to properly support multiple "move types"</p><pre class='odin'><code><span class="type">Any_Move</span> :: <span class="keyword">union</span> <span class="keyword">#no_nil</span> {
+	<span class="type">Attack</span>,
+	<span class="type">Stat_Change</span>,
+}
+
+<span class="type">Move</span> :: <span class="keyword">struct</span> {
+	<span class="constant">derived</span>: <span class="type">Any_Move</span>,
+	<span class="constant">name</span>: <span class="keyword">string</span>,
+	<span class="constant">accuracy</span>: <span class="keyword">f32</span>,
+}
+
+<span class="type">Attack</span> :: <span class="keyword">struct</span> {
+	<span class="constant">damage</span>: <span class="keyword">i32</span>,
+	<span class="constant">status_effects</span>: []<span class="type">Status_Effect</span>,
+	<span class="constant">makes_contact</span>: <span class="keyword">bool</span>
+}
+
+<span class="type">Stat_Change</span> :: <span class="keyword">struct</span> {
+	<span class="constant">health_change</span>: <span class="keyword">f32</span>,
+	<span class="constant">defense_change</span>: <span class="keyword">f32</span>,
+	<span class="constant">accuracy_change</span>: <span class="keyword">f32</span>,
+	<span class="constant">confusion_change</span>: <span class="keyword">i32</span>,
+	<span class="comment">// ...</span>
+}
+</code></pre><p>I'm a big fan of this structure. You could argue that we should also use an enum for stat changes, and that may be true. It just depends on how these stats are actually stored on pokemon. The #no_nil is necessary because by default, Odin unions have a "nil state", where they hold no values at all. This is super useful for some situations, but doesn't make sense here.</p><p>Using our new structure is super simple too, and arguably even more readable than before:</p><pre class='odin'><code>scratch := <span class="type">Move</span> {<span class="string">"Scratch"</span>, <span class="number">1</span>, <span class="type">Attack</span> {
+	damage = <span class="number">40</span>,
+	makes_contact = <span class="keyword">true</span>
+}}
+
+acid_armor := <span class="type">Move</span>{<span class="string">"Acid Armor"</span>, <span class="number">1</span>, <span class="type">Stat_Change</span> {
+	defense_change = +<span class="number">2</span>
+}}
+</code></pre><p>If we wanted to add a new type of stat change, something for the enemy, we could do that too, super easily!</p><pre class='odin'><code><span class="type">Enemy_Stat_Change</span> :: <span class="keyword">distinct</span> <span class="type">Stat_Change</span> <span class="comment">// New type, same structure</span>
+
+<span class="type">Any_Move</span> :: <span class="keyword">union</span> <span class="keyword">#no_nil</span> {
+	<span class="type">Attack</span>,
+	<span class="type">Stat_Change</span>,
+	<span class="type">Enemy_Stat_Change</span>
+}
+</code></pre><p>We make a new type, add it to the union, and now we can use it anywhere</p><pre class='odin'><code>confuse_ray := <span class="type">Move</span>{<span class="string">"Confuse Ray"</span>, <span class="number">1</span>, <span class="type">Enemy_Stat_Change</span> {
+	confusion_change = rand.<span class="call">int_range</span>(<span class="number">1</span>,<span class="number">5</span>)
+}}
+</code></pre><p>We can take this further, too. Some moves may do a bunch of different things at once, like damage the enemy, and heal the user. One more move type, and we're good</p><pre class='odin'><code><span class="type">Compound_Move</span> :: <span class="keyword">struct</span> {
+	<span class="constant">moves</span>: []<span class="type">Any_Move</span>
+}
+
+<span class="type">Any_Move</span> :: <span class="keyword">union</span> <span class="keyword">#no_nil</span> {
+	<span class="type">Attack</span>,
+	<span class="type">Stat_Change</span>,
+	<span class="type">Enemy_Stat_Change</span>,
+	<span class="type">Compound_Move</span>
+}
+</code></pre><p>Now, we can make a ton of different moves</p><pre class='odin'><code>absorb := <span class="type">Move</span> {<span class="string">"Absorb"</span>, <span class="number">1</span>, <span class="type">Compound_Move</span>{{
+	<span class="type">Attack</span> {
+		damage = <span class="number">20</span>,
+	},
+	<span class="type">Stat_Change</span> {
+		health_change = <span class="number">10</span>
+	}
+}}}
+</code></pre><p>Final thing, what if a move had to do something truly special? What if we wanted one move to change the game's time, or transform some pokemon, or add an item to the user's inventory or something? Well we <em>could</em> add more types, but this sounds like a good use case for a function pointer. We might define something like this</p><pre class='odin'><code>Custom_Move_Callback :: <span class="keyword">#type</span> <span class="keyword">proc</span>(self: ^<span class="type">Move</span>, user: ^<span class="type">Pokemon</span>, game_state: ^<span class="type">Game_State</span>)
+
+<span class="type">Custom_Move</span> :: <span class="keyword">struct</span> {
+	<span class="constant">data</span>: <span class="keyword">rawptr</span>, 
+	<span class="constant">callback</span>: <span class="type">Custom_Move_Callback</span>
+}
+
+<span class="type">Any_Move</span> :: <span class="keyword">union</span> <span class="keyword">#no_nil</span> {
+	<span class="type">Attack</span>,
+	<span class="type">Stat_Change</span>,
+	<span class="type">Enemy_Stat_Change</span>,
+	<span class="type">Compound_Move</span>,
+	<span class="type">Custom_Move</span>
+}
+</code></pre><p>Now that we have this, we can really write whatever we want</p><pre class='odin'><code><span class="comment">// pokemondb didnt show me any real moves that do this, so i made it up</span>
+scavenge := <span class="type">Move</span> {<span class="string">"Scavenge"</span>, <span class="number">1</span>, <span class="type">Custom_Move</span>{
+	callback = <span class="keyword">proc</span>(self: ^<span class="type">Move</span>, user: ^<span class="type">Pokemon</span>, game_state: ^<span class="type">Game_State</span>) {
+		<span class="call">add_item</span>(&game_state.player.inventory, <span class="call">random_item</span>(game_state))
+	}
+}}
+</code></pre><p>I'll end it here, because this was just a demonstation of how advanced this stuff can get. You might have noticed that passing callbacks feels a bit "functional", and our <code>self</code> combined with <code>data: rawptr</code> feels a bit like emulating subtype polymorphism. This is totally true, and it's because procedural programming is a very foundational paradigm, that other paradigms build on.</p><p>If I did have to make this much more complicated, I'd probably go for a components approach, similar to our <code>Compound_Move</code> but more generalized. Obviously pokemon has a bunch of random niche moves that do wild things, so you'd need to be storing a lot of state regardless. Some moves have accuracy calculated dynamically, some moves take more than one turn, and so on. Still, the idea generalizes.</p><p>At the end of the day, you can basically do anything with well-structured procedural code. It's explicit, it's direct, and it neatly represents what you're trying to say without leaving room for invalid states.</p>
+            </article>
+            
+            <footer><hr/>Generated using <a href = "https://github.com/rats159/ratsbloggenerator">rats159's Markdown Parser</a> at 2/1/2026</footer>
+        </body>
+    </html>
