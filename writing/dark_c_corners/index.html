@@ -1,4 +1,3 @@
-
     <!DOCTYPE html>
     <html lang="en">
         <head>
@@ -7,148 +6,133 @@
                 name="viewport"
                 content="width=device-width, initial-scale=1.0"
             />
-            <title>Document</title>
             <style>
-                body {
-                    background-color: #111;
-                    font-family:sans-serif;
-                    display:grid;
-                    place-items: center;
-                    color: #ccc;
-                    line-height: 1.5em;
-                    flex-direction:column;
-                }
-                
-                h2 {
-                    margin-top: 2em;
-                }
-                
-                code {
-                    font-family: 'JetBrains Mono', monospace
-                }
-                
-                pre {
-                    width: fit-content;
-                    padding:1em;
-                    border-radius: 1em;
-                    line-height:1.25em;
-                    white-space: pre-wrap;
-                }
-                
-                :not(pre) > code {
-                    background-color: #1e1e1e;
-                    padding:.125em;
-                }
-                
-                article {
-                    max-width: 80ch;
-                }
+            	body {
+    background-color: #111;
+    font-family: sans-serif;
+    display: grid;
+    place-items: center;
+    color: #ccc;
+    line-height: 1.5em;
+    flex-direction: column;
+}
+
+h2 {
+    margin-top: 2em;
+}
+
+code {
+    font-family: "JetBrains Mono NL", monospace;
+}
+
+pre {
+    width: fit-content;
+    padding: 1em;
+    border-radius: 1em;
+    line-height: 1.25em;
+    white-space: pre-wrap;
+    background-color: #1e1e1e;
+    color: #bbbbbb;
+}
+
+:not(pre) > code {
+    background-color: #1e1e1e;
+    padding: 0.125em;
+}
+
+article {
+    max-width: 80ch;
+}
+
+.keyword {
+    color: #cf8e6d;
+}
+
+.type {
+    color: #6fafbd
+}
+
+.constant {
+    color: #c77dbb
+}
+
+.string {
+    color: #6aab73
+}
+
+.number {
+    color: #2aacb8
+}
+
+.comment {
+    color: #7a7e85
+}
+
+.call {
+    color: #56a8f5
+}
             </style>
         </head>
         <body>
             <article>
-            <h1>The hidden corners of C</h1>
-<h2>Intro</h2>
-<p>C is a very old language, but it's still being worked on to this day. Most of the syntax has been figured out for several decades, but very old C used to look pretty different. There's also a few features that haven't ever changed, but are very rarely used.</p>
-<h2>Bit Fields</h2>
-<p>Sometimes you need to cram different types of data into a small space. You'll see this a lot with certain file headers and things, and they're usually done with regular bitwise operations. However, C actually has a language feature for this, called bit fields.</p>
-<p>To make a bitfield in C, you just need to specify the bit-size with a colon after the name. Here's a little example:</p>
-<pre class="shiki " style="background-color:#1e1e1e;color:#bbbbbb" tabindex="0"><code class="language-c"><span class="line"><span style="color:#CF8E6D">struct</span><span style="color:#BBBBBB"> Bitfield {</span></span>
-<span class="line"><span style="color:#CF8E6D">    signed</span><span style="color:#CF8E6D"> int</span><span style="color:#BBBBBB"> x</span><span style="color:#CF8E6D">:</span><span style="color:#2AACB8"> 4</span><span style="color:#BBBBBB">;</span></span>
-<span class="line"><span style="color:#CF8E6D">    signed</span><span style="color:#CF8E6D"> int</span><span style="color:#BBBBBB"> y</span><span style="color:#CF8E6D">:</span><span style="color:#2AACB8"> 4</span><span style="color:#BBBBBB">;</span></span>
-<span class="line"><span style="color:#BBBBBB">};</span></span></code></pre>
-<p>The first thing you'll probably notice is the <code>signed</code> keyword. That's a bit of an honorable mention, since you don't see it much, but it does exactly what you'd expect it to do. The reason it's used here, is because <code>int</code> inside of a bitfield is different than every other <code>int</code> in the language for some reason. Inside a bitfield, standard <code>int</code> has an implementation-defined signedness, despite being signed in every other part of the language.</p>
-<p>Back to the actual syntax: The only allowed type here is <code>int</code>, with an optional <code>signed</code>/<code>unsigned</code> qualifier. This makes sense, because specifying the size of the number with a type like <code>short</code> or <code>long</code> doesn't make sense in this context, and pointers and floating-point numbers can't be resized in a meaningful way. Arrays also aren't allowed, though this is more of a design choice than anything else. You also can't take a pointer to a bit field's members, since they necessarily may not fall on addressable boundaries.</p>
-<h2>K&amp;R-Style Function Definitions</h2>
-<p>Have you ever seen a function declared like this</p>
-<pre class="shiki " style="background-color:#1e1e1e;color:#bbbbbb" tabindex="0"><code class="language-c"><span class="line"><span style="color:#CF8E6D">int</span><span style="color:#56A8F5"> func</span><span style="color:#BBBBBB">(</span><span style="color:#CF8E6D">void</span><span style="color:#BBBBBB">);</span></span></code></pre>
-<p>and wondered why they need to specify <code>void</code> there? Or maybe you've seen why, when you had a function like</p>
-<pre class="shiki " style="background-color:#1e1e1e;color:#bbbbbb" tabindex="0"><code class="language-c"><span class="line"><span style="color:#CF8E6D">int</span><span style="color:#56A8F5"> func</span><span style="color:#BBBBBB">();</span></span></code></pre>
-<p>inside a header file and realized that the compiler lets you call it with any number of arguments of any type. You might need to compile with an older version of C to see this happen, since it was removed in C23, but in classic C, functions could be declared in all sorts of weird ways. The reason for this is a bit hard to justify, but C functions used to look very different.</p>
-<p>If you were writing C in the very early days, before 1989 when the first official standard was released, C functions looked like this:</p>
-<pre class="shiki " style="background-color:#1e1e1e;color:#bbbbbb" tabindex="0"><code class="language-c"><span class="line"><span style="color:#CF8E6D">int</span><span style="color:#56A8F5"> add</span><span style="color:#BBBBBB">(a, b) </span><span style="color:#CF8E6D">int</span><span style="color:#BBBBBB"> a; </span><span style="color:#CF8E6D">int</span><span style="color:#BBBBBB"> b; {</span></span>
-<span class="line"><span style="color:#CF8E6D">    return</span><span style="color:#BBBBBB"> a </span><span style="color:#CF8E6D">+</span><span style="color:#BBBBBB"> b;</span></span>
-<span class="line"><span style="color:#BBBBBB">}</span></span></code></pre>
-<p>So, why? Everything I could find mainly states that that's just &quot;how it was&quot;, and that it would've been more work and memory for the compiler to track all the types, which wasn't an easy pill to swallow when you're designed for the PDP-11, a computer with 4KB of RAM, less than half the size of this markdown file!</p>
-<p>So then, the idea was that as long as the compiler knew there <em>was</em> a function, the types didn't really matter. Worse though, is that the compiler also would simply assume types in a lot of cases. You see, you can actually totally omit those parameter types, and the compiler will simply assume they're <code>int</code>s. You can even do the same for the function's return type, which means that</p>
-<pre class="shiki " style="background-color:#1e1e1e;color:#bbbbbb" tabindex="0"><code class="language-c"><span class="line"><span style="color:#56A8F5">add</span><span style="color:#BBBBBB">(a, b) {</span></span>
-<span class="line"><span style="color:#CF8E6D">    return</span><span style="color:#BBBBBB"> a </span><span style="color:#CF8E6D">+</span><span style="color:#BBBBBB"> b;</span></span>
-<span class="line"><span style="color:#BBBBBB">}</span></span></code></pre>
-<p>is a perfectly valid C function. You're almost certainly gonna have to tell your compiler to be a bit permissive in order to compile this one, but it's valid nonetheless, even in C23!</p>
-<h2>String concatenation</h2>
-<p>This one's not so secret, but I think it's interesting to cover nonetheless. In a lot of high-level languages like Java, Python, or C#, you can combine strings just by adding them. The only issue here is that it requires an allocation, so you need some sort of automatic memory management to keep it under control. There is one exception though, when all of the values are known at compile-time, the allocation can be done once, when compiling, and then the final string can be baked into your program. C allows you to do this, simply by placing the literals next to each other!</p>
-<pre class="shiki " style="background-color:#1e1e1e;color:#bbbbbb" tabindex="0"><code class="language-c"><span class="line"><span style="color:#56A8F5">printf</span><span style="color:#BBBBBB">(</span><span style="color:#6AAB73">"Hello,"" World!"</span><span style="color:#BBBBBB">);</span></span></code></pre>
-<p>is a perfectly valid way to combine two strings, however cursed it may look. Your first thought might be &quot;Why didn't they just use +?&quot;, but the reason is actually pretty clever. You see, it's impossible to do this with anything other than a string literal, so the syntax doesn't need to try and make a distinction between compile-time and runtime values, which simplifies the work.</p>
-<p>Additional fun fact, Python also supports doing this to strings, I have no idea why.</p>
-<h2>Variadic arguments</h2>
-<p>Have you ever looked at a function like <code>printf</code> and wondered how it's able to accept any number of arguments? A ton of languages have features for this, but they usually rely on features that C doesn't have, like a proper array or slice type. Instead, C has a special <code>...</code> parameter, which can be used to allow any number of arguments to be jammed into the function. Using it looks a little like this:</p>
-<pre class="shiki " style="background-color:#1e1e1e;color:#bbbbbb" tabindex="0"><code class="language-c"><span class="line"><span style="color:#CF8E6D">void</span><span style="color:#56A8F5"> printf</span><span style="color:#BBBBBB">(</span><span style="color:#CF8E6D">const</span><span style="color:#CF8E6D"> char</span><span style="color:#CF8E6D"> *</span><span style="color:#BBBBBB">format, </span><span style="color:#CF8E6D">...</span><span style="color:#BBBBBB">);</span></span></code></pre>
-<p>Something you'll notice is that there's no type there. That makes sense, since <code>printf</code> can accept any type, but how does the function know what types it's being given? This is actually super clever. You see, when you use the variadic argument, C will just shove every argument together into what's basically a big buffer. It's up to you to actually parse what's in there, which is exactly what <code>printf</code> uses those <code>%d</code> format specifiers for! It's parsing through the string you give it, and every time it finds a format specifier, it's reading that type out of the big argument buffer! This is also why it isn't type-safe, since there's no way to validate what it's actually trying to read.</p>
-<h2>Flexible array members</h2>
-<p>This one's a bit weird. Have you ever seen a struct like this?</p>
-<pre class="shiki " style="background-color:#1e1e1e;color:#bbbbbb" tabindex="0"><code class="language-c"><span class="line"><span style="color:#CF8E6D">struct</span><span style="color:#BBBBBB"> Array {</span></span>
-<span class="line"><span style="color:#CF8E6D">    int</span><span style="color:#BBBBBB"> size;</span></span>
-<span class="line"><span style="color:#CF8E6D">    int</span><span style="color:#BBBBBB"> values[];</span></span>
-<span class="line"><span style="color:#BBBBBB">}</span></span></code></pre>
-<p>Do you know how big it is? I'll give you a hint, this isn't a case of arrays sneakily being pointers.</p>
-<p>The answer is the size of <code>int</code>, at least according to <code>sizeof</code>. What's happening here is what's called a Flexible Array Member. It's a C99 feature that allows the last member of a struct to be an array of unspecified size. It means you can store all your information inline, without needing to store a pointer and have indirection, but it comes with some interesting drawbacks.</p>
-<p>Like I mentioned, the <code>sizeof</code> operator will act like that flexible array is entirely empty. It's doing this because <code>sizeof</code> happens at compile-time, so it has no way to know the size of the struct. You'll also see this behavior anywhere else you have to know the size at compile time, like trying to assign it to another variable, or passing it to a function. This makes it pretty niche and easy to mess up, but if you're careful to always use pointers, it can be really useful in the right cases.</p>
-<h2>The <code>restrict</code> and <code>volatile</code> keywords</h2>
-<p>You might've heard of this one before, but have you ever actually used it? <code>restrict</code> in C is an additional type specifier you can give to pointers, like <code>int *restrict x;</code>, and it tells the compiler that this pointer is &quot;restricted&quot;, meaning it's the sole pointer to some data. The main goal here it to say that the value stored at the pointer won't get swapped under your feet, here's an example.</p>
-<pre class="shiki " style="background-color:#1e1e1e;color:#bbbbbb" tabindex="0"><code class="language-c"><span class="line"><span style="color:#CF8E6D">void</span><span style="color:#56A8F5"> modify</span><span style="color:#BBBBBB">(</span><span style="color:#CF8E6D">int</span><span style="color:#CF8E6D"> *</span><span style="color:#BBBBBB">target, </span><span style="color:#CF8E6D">int*</span><span style="color:#BBBBBB"> value) {</span></span>
-<span class="line"><span style="color:#CF8E6D">    *</span><span style="color:#BBBBBB">target </span><span style="color:#CF8E6D">+=</span><span style="color:#CF8E6D"> *</span><span style="color:#BBBBBB">value;</span></span>
-<span class="line"><span style="color:#CF8E6D">    *</span><span style="color:#BBBBBB">target </span><span style="color:#CF8E6D">*=</span><span style="color:#CF8E6D"> *</span><span style="color:#BBBBBB">value;</span></span>
-<span class="line"><span style="color:#CF8E6D">    *</span><span style="color:#BBBBBB">target </span><span style="color:#CF8E6D">+=</span><span style="color:#CF8E6D"> *</span><span style="color:#BBBBBB">value;</span></span>
-<span class="line"><span style="color:#BBBBBB">}</span></span></code></pre>
-<p>Now, under most circumstances, there's a very simple optimization to make, which is to dereference <code>value</code> once, rather than 3 times, however the C compiler can't safely assume that. Consider this case:</p>
-<pre class="shiki " style="background-color:#1e1e1e;color:#bbbbbb" tabindex="0"><code class="language-c"><span class="line"><span style="color:#CF8E6D">int</span><span style="color:#BBBBBB"> x </span><span style="color:#CF8E6D">=</span><span style="color:#2AACB8"> 2</span><span style="color:#BBBBBB">;</span></span>
-<span class="line"><span style="color:#56A8F5">modify</span><span style="color:#BBBBBB">(</span><span style="color:#CF8E6D">&#x26;</span><span style="color:#BBBBBB">x, </span><span style="color:#CF8E6D">&#x26;</span><span style="color:#BBBBBB">x);</span></span></code></pre>
-<p>Here, <code>x</code> is the target and the value, which means that <code>value</code> will change during the function! Now, a modern compiler may be able to detect cases when this doesn't happen, and optimize accordingly, but <code>restrict</code> exists to allow you to directly tell the compiler that that value will never change under your feet.</p>
-<p>Next, there's <code>volatile</code>. It basically says the opposite. The compiler shall never assume that the data is stable. This is mainly useful in the context of embedded systems or other cases with memory-mapped IO, where code like</p>
-<pre class="shiki " style="background-color:#1e1e1e;color:#bbbbbb" tabindex="0"><code class="language-c"><span class="line"><span style="color:#CF8E6D">volatile</span><span style="color:#CF8E6D"> bool</span><span style="color:#CF8E6D"> *const</span><span style="color:#BBBBBB"> PORT </span><span style="color:#CF8E6D">=</span><span style="color:#BBBBBB"> (</span><span style="color:#CF8E6D">volatile</span><span style="color:#CF8E6D"> bool</span><span style="color:#CF8E6D"> *</span><span style="color:#BBBBBB">)</span><span style="color:#2AACB8">0x1000</span><span style="color:#BBBBBB">;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#CF8E6D">*</span><span style="color:#BBBBBB">PORT </span><span style="color:#CF8E6D">=</span><span style="color:#2AACB8"> 0</span><span style="color:#BBBBBB">;</span></span>
-<span class="line"><span style="color:#CF8E6D">while</span><span style="color:#BBBBBB"> (</span><span style="color:#CF8E6D">!*</span><span style="color:#BBBBBB">PORT) {}</span></span></code></pre>
-<p>might actually make sense. Here, we're saying that <code>PORT</code> is a boolean pointer at address <code>0x1000</code>, and telling the compiler to make no assumptions about the state of it. It makes sense in a context like this, where we can assume there's another program, or maybe hardware itself, which will write to address <code>0x1000</code> to inform us of something.</p>
-<p>Another honorable mention goes to placing <code>const</code> on the other side of the pointer. It's just a way to say that <code>PORT</code> cannot be reassigned, but <code>*PORT</code> is fine.</p>
-<h2>The <code>_Generic</code> keyword</h2>
-<p>This one's a new-ish feature for a change! One common complaint about C is its lack of generic programming capabilities, something like <code>template</code> in C++ or generics in other languages. Turns out, since C11, C has had generics! Sort of, kind of, ish...</p>
-<p>This is a feature I've genuinely never seen someone use, but it's effectively a switch statement for the type of an expression. Here's an example, apologies that it's a bit messy:</p>
-<pre class="shiki " style="background-color:#1e1e1e;color:#bbbbbb" tabindex="0"><code class="language-c"><span class="line"><span style="color:#CF8E6D">void</span><span style="color:#56A8F5"> print_float</span><span style="color:#BBBBBB">(</span><span style="color:#CF8E6D">float</span><span style="color:#BBBBBB"> x) {</span></span>
-<span class="line"><span style="color:#56A8F5">    printf</span><span style="color:#BBBBBB">(</span><span style="color:#6AAB73">"A float!\n"</span><span style="color:#BBBBBB">);</span></span>
-<span class="line"><span style="color:#BBBBBB">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#CF8E6D">void</span><span style="color:#56A8F5"> print_int</span><span style="color:#BBBBBB">(</span><span style="color:#CF8E6D">int</span><span style="color:#BBBBBB"> x) {</span></span>
-<span class="line"><span style="color:#56A8F5">    printf</span><span style="color:#BBBBBB">(</span><span style="color:#6AAB73">"An int!\n"</span><span style="color:#BBBBBB">);</span></span>
-<span class="line"><span style="color:#BBBBBB">}</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#CF8E6D">#define</span><span style="color:#56A8F5"> print</span><span style="color:#BBBBBB">(val) </span><span style="color:#CF8E6D">_Generic</span><span style="color:#BBBBBB">((val), \</span></span>
-<span class="line"><span style="color:#CF8E6D">    float:</span><span style="color:#BBBBBB"> print_float,\</span></span>
-<span class="line"><span style="color:#CF8E6D">    int:</span><span style="color:#BBBBBB"> print_int\</span></span>
-<span class="line"><span style="color:#BBBBBB">)(val)</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#CF8E6D">int</span><span style="color:#56A8F5"> main</span><span style="color:#BBBBBB">(</span><span style="color:#CF8E6D">void</span><span style="color:#BBBBBB">) {</span></span>
-<span class="line"><span style="color:#CF8E6D">    int</span><span style="color:#BBBBBB"> x </span><span style="color:#CF8E6D">=</span><span style="color:#2AACB8"> 10</span><span style="color:#BBBBBB">;</span></span>
-<span class="line"><span style="color:#CF8E6D">    float</span><span style="color:#BBBBBB"> y </span><span style="color:#CF8E6D">=</span><span style="color:#2AACB8"> 20.0f</span><span style="color:#BBBBBB">;</span></span>
-<span class="line"></span>
-<span class="line"><span style="color:#56A8F5">    print</span><span style="color:#BBBBBB">(x);</span></span>
-<span class="line"><span style="color:#56A8F5">    print</span><span style="color:#BBBBBB">(y);</span></span>
-<span class="line"><span style="color:#BBBBBB">    </span></span>
-<span class="line"><span style="color:#CF8E6D">    return</span><span style="color:#2AACB8"> 0</span><span style="color:#BBBBBB">;</span></span>
-<span class="line"><span style="color:#BBBBBB">}</span></span></code></pre>
-<p>So, what the hell is this? Firstly, we have two functions for printing different types, that's simple enough, then we have the <code>print</code> macro...</p>
-<p>Let's look at the expansion of <code>print(x)</code>:</p>
-<pre class="shiki " style="background-color:#1e1e1e;color:#bbbbbb" tabindex="0"><code class="language-c"><span class="line"><span style="color:#CF8E6D">_Generic</span><span style="color:#BBBBBB">((x), </span></span>
-<span class="line"><span style="color:#CF8E6D">    float:</span><span style="color:#BBBBBB"> print_float,</span></span>
-<span class="line"><span style="color:#CF8E6D">    int:</span><span style="color:#BBBBBB"> print_int</span></span>
-<span class="line"><span style="color:#BBBBBB">)(x)</span></span></code></pre>
-<p>Firstly, the generic keyword. It works like a function, sorta. Firstly, it accepts an expression, whose type is the type we're switching over, then a list of possible matches. In this case, we give it an expression to expand to for <code>float</code>s, and an expression for <code>int</code>s. Then, we're calling it with <code>x</code> again, because <code>_Generic</code> will simply expand to the value that matches, which will be one of our two functions. <code>_Generic</code> also supports a <code>default</code> branch, which will be matched last, if no other types fit.</p>
-<h2>That's all, for now!</h2>
-<p>So yeah, C is a weird language, and there's a ton I didn't cover. One thing I totally ignored was all the unexpected places that undefined behavior creeps in, some other weird types like C's builtin complex numbers under the <code>_Complex</code> type, even more odd keywords like <code>register</code> or <code>_Noreturn</code>, or even variadic macros!</p>
-<p>Either way, that's for another time, so have fun writing C, or don't!</p>
+            <h1>The hidden corners of C</h1><h2>Intro</h2><p>C is a very old language, but it's still being worked on to this day. Most of the syntax has been figured out for several decades, but very old C used to look pretty different. There's also a few features that haven't ever changed, but are very rarely used.</p><h2>Bit Fields</h2><p>Sometimes you need to cram different types of data into a small space. You'll see this a lot with certain file headers and things, and they're usually done with regular bitwise operations. However, C actually has a language feature for this, called bit fields.</p><p>To make a bitfield in C, you just need to specify the bit-size with a colon after the name. Here's a little example:</p><pre class='c'><code><span class="keyword">struct</span> <span class="type">Bitfield</span> {
+    <span class="keyword">signed </span><span class="keyword">int</span> <span class="constant">x</span>: <span class="number">4</span>;
+    <span class="keyword">signed </span><span class="keyword">int</span> <span class="constant">y</span>: <span class="number">4</span>;
+};
+</code></pre><p>The first thing you'll probably notice is the <code>signed</code> keyword. That's a bit of an honorable mention, since you don't see it much, but it does exactly what you'd expect it to do. The reason it's used here, is because <code>int</code> inside of a bitfield is different than every other <code>int</code> in the language for some reason. Inside a bitfield, standard <code>int</code> has an implementation-defined signedness, despite being signed in every other part of the language.</p><p>Back to the actual syntax: The only allowed type here is <code>int</code>, with an optional <code>signed</code>/<code>unsigned</code> qualifier. This makes sense, because specifying the size of the number with a type like <code>short</code> or <code>long</code> doesn't make sense in this context, and pointers and floating-point numbers can't be resized in a meaningful way. Arrays also aren't allowed, though this is more of a design choice than anything else. You also can't take a pointer to a bit field's members, since they necessarily may not fall on addressable boundaries.</p><h2>K&R-Style Function Definitions</h2><p>Have you ever seen a function declared like this</p><pre class='c'><code><span class="keyword">int</span> <span class="call">func</span>(<span class="keyword">void</span>);
+</code></pre><p>and wondered why they need to specify <code>void</code> there? Or maybe you've seen why, when you had a function like</p><pre class='c'><code><span class="keyword">int</span> <span class="call">func</span>();
+</code></pre><p>inside a header file and realized that the compiler lets you call it with any number of arguments of any type. You might need to compile with an older version of C to see this happen, since it was removed in C23, but in classic C, functions could be declared in all sorts of weird ways. The reason for this is a bit hard to justify, but C functions used to look very different.</p><p>If you were writing C in the very early days, before 1989 when the first official standard was released, C functions looked like this:</p><pre class='c'><code><span class="keyword">int</span> <span class="call">add</span>(a, b) <span class="keyword">int</span> a; <span class="keyword">int</span> b; {
+    <span class="keyword">return</span> a + b;
+}
+</code></pre><p>So, why? Everything I could find mainly states that that's just "how it was", and that it would've been more work and memory for the compiler to track all the types, which wasn't an easy pill to swallow when you're designed for the PDP-11, a computer with 4KB of RAM, less than half the size of this markdown file!</p><p>So then, the idea was that as long as the compiler knew there <em>was</em> a function, the types didn't really matter. Worse though, is that the compiler also would simply assume types in a lot of cases. You see, you can actually totally omit those parameter types, and the compiler will simply assume they're <code>int</code>s. You can even do the same for the function's return type, which means that</p><pre class='c'><code><span class="call">add</span>(a, b) {
+    <span class="keyword">return</span> a + b;
+}
+</code></pre><p>is a perfectly valid C function. You're almost certainly gonna have to tell your compiler to be a bit permissive in order to compile this one, but it's valid nonetheless, even in C23!</p><h2>String concatenation</h2><p>This one's not so secret, but I think it's interesting to cover nonetheless. In a lot of high-level languages like Java, Python, or C#, you can combine strings just by adding them. The only issue here is that it requires an allocation, so you need some sort of automatic memory management to keep it under control. There is one exception though, when all of the values are known at compile-time, the allocation can be done once, when compiling, and then the final string can be baked into your program. C allows you to do this, simply by placing the literals next to each other!</p><pre class='c'><code><span class="call">printf</span>(<span class="string">"Hello,"</span><span class="string">" World!"</span>);
+</code></pre><p>is a perfectly valid way to combine two strings, however cursed it may look. Your first thought might be "Why didn't they just use +?", but the reason is actually pretty clever. You see, it's impossible to do this with anything other than a string literal, so the syntax doesn't need to try and make a distinction between compile-time and runtime values, which simplifies the work.</p><p>Additional fun fact, Python also supports doing this to strings, I have no idea why.</p><h2>Variadic arguments</h2><p>Have you ever looked at a function like <code>printf</code> and wondered how it's able to accept any number of arguments? A ton of languages have features for this, but they usually rely on features that C doesn't have, like a proper array or slice type. Instead, C has a special <code>...</code> parameter, which can be used to allow any number of arguments to be jammed into the function. Using it looks a little like this:</p><pre class='c'><code><span class="keyword">void</span> <span class="call">printf</span>(<span class="keyword">const</span> <span class="keyword">char</span> *format, ...);
+</code></pre><p>Something you'll notice is that there's no type there. That makes sense, since <code>printf</code> can accept any type, but how does the function know what types it's being given? This is actually super clever. You see, when you use the variadic argument, C will just shove every argument together into what's basically a big buffer. It's up to you to actually parse what's in there, which is exactly what <code>printf</code> uses those <code>%d</code> format specifiers for! It's parsing through the string you give it, and every time it finds a format specifier, it's reading that type out of the big argument buffer! This is also why it isn't type-safe, since there's no way to validate what it's actually trying to read.</p><h2>Flexible array members</h2><p>This one's a bit weird. Have you ever seen a struct like this?</p><pre class='c'><code><span class="keyword">struct</span> <span class="type">Array</span> {
+    <span class="keyword">int</span> <span class="constant">size</span>;
+    <span class="keyword">int</span> <span class="constant">values</span>[];
+};
+</code></pre><p>Do you know how big it is? I'll give you a hint, this isn't a case of arrays sneakily being pointers.</p><p>The answer is the size of <code>int</code>, at least according to <code>sizeof</code>. What's happening here is what's called a Flexible Array Member. It's a C99 feature that allows the last member of a struct to be an array of unspecified size. It means you can store all your information inline, without needing to store a pointer and have indirection, but it comes with some interesting drawbacks.</p><p>Like I mentioned, the <code>sizeof</code> operator will act like that flexible array is entirely empty. It's doing this because <code>sizeof</code> happens at compile-time, so it has no way to know the size of the struct. You'll also see this behavior anywhere else you have to know the size at compile time, like trying to assign it to another variable, or passing it to a function. This makes it pretty niche and easy to mess up, but if you're careful to always use pointers, it can be really useful in the right cases.</p><h2>The <code>restrict</code> and <code>volatile</code> keywords</h2><p>You might've heard of this one before, but have you ever actually used it? <code>restrict</code> in C is an additional type specifier you can give to pointers, like <code>int *restrict x;</code>, and it tells the compiler that this pointer is "restricted", meaning it's the sole pointer to some data. The main goal here it to say that the value stored at the pointer won't get swapped under your feet, here's an example.</p><pre class='c'><code><span class="keyword">void</span> <span class="call">modify</span>(<span class="keyword">int</span> *target, <span class="keyword">int</span> *value) {
+    *target += *value;
+    *target *= *value;
+    *target += *value;
+}
+</code></pre><p>Now, under most circumstances, there's a very simple optimization to make, which is to dereference <code>value</code> once, rather than 3 times, however the C compiler can't safely assume that. Consider this case:</p><pre class='c'><code><span class="keyword">int</span> x = <span class="number">2</span>;
+<span class="call">modify</span>(&x, &x);
+</code></pre><p>Here, <code>x</code> is the target and the value, which means that <code>value</code> will change during the function! Now, a modern compiler may be able to detect cases when this doesn't happen, and optimize accordingly, but <code>restrict</code> exists to allow you to directly tell the compiler that that value will never change under your feet.</p><p>Next, there's <code>volatile</code>. It basically says the opposite. The compiler shall never assume that the data is stable. This is mainly useful in the context of embedded systems or other cases with memory-mapped IO, where code like</p><pre class='c'><code><span class="keyword">volatile</span> <span class="keyword">bool</span> *<span class="keyword">const</span> PORT = (<span class="keyword">volatile</span> <span class="keyword">bool</span> *)<span class="number">0x1000</span>;
 
+*PORT = <span class="number">0</span>;
+<span class="keyword">while</span> (!*PORT) {}
+</code></pre><p>might actually make sense. Here, we're saying that <code>PORT</code> is a boolean pointer at address <code>0x1000</code>, and telling the compiler to make no assumptions about the state of it. It makes sense in a context like this, where we can assume there's another program, or maybe hardware itself, which will write to address <code>0x1000</code> to inform us of something.</p><p>Another honorable mention goes to placing <code>const</code> on the other side of the pointer. It's just a way to say that <code>PORT</code> cannot be reassigned, but <code>*PORT</code> is fine.</p><h2>The <code>_Generic</code> keyword</h2><p>This one's a new-ish feature for a change! One common complaint about C is its lack of generic programming capabilities, something like <code>template</code> in C++ or generics in other languages. Turns out, since C11, C has had generics! Sort of, kind of, ish...</p><p>This is a feature I've genuinely never seen someone use, but it's effectively a switch statement for the type of an expression. Here's an example, apologies that it's a bit messy:</p><pre class='c'><code><span class="keyword">void</span> <span class="call">print_float</span>(<span class="keyword">float</span> x) {
+    <span class="call">printf</span>(<span class="string">"A float!\n"</span>);
+}
+
+<span class="keyword">void</span> <span class="call">print_int</span>(<span class="keyword">int</span> x) {
+    <span class="call">printf</span>(<span class="string">"An int!\n"</span>);
+}
+
+<span class="keyword">#define</span> <span class="call">print</span>(val) _Generic((val), \
+    float: print_float,\
+    int: print_int\
+)(val)
+
+<span class="keyword">int</span> <span class="call">main</span>(<span class="keyword">void</span>) {
+    <span class="keyword">int</span> x = <span class="number">10</span>;
+    <span class="keyword">float</span> y = <span class="number">20.0f</span>;
+
+    <span class="call">print</span>(x);
+    <span class="call">print</span>(y);
+    
+    <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre><p>So, what the hell is this? Firstly, we have two functions for printing different types, that's simple enough, then we have the <code>print</code> macro...</p><p>Let's look at the expansion of <code>print(x)</code>:</p><pre class='c'><code><span class="keyword">_Generic</span>((x), 
+    <span class="keyword">float</span>: print_float,
+    <span class="keyword">int</span>: print_int
+)(x);
+</code></pre><p>Firstly, the generic keyword. It works like a function, sorta. Firstly, it accepts an expression, whose type is the type we're switching over, then a list of possible matches. In this case, we give it an expression to expand to for <code>float</code>s, and an expression for <code>int</code>s. Then, we're calling it with <code>x</code> again, because <code>_Generic</code> will simply expand to the value that matches, which will be one of our two functions. <code>_Generic</code> also supports a <code>default</code> branch, which will be matched last, if no other types fit.</p><h2>That's all, for now!</h2><p>So yeah, C is a weird language, and there's a ton I didn't cover. One thing I totally ignored was all the unexpected places that undefined behavior creeps in, some other weird types like C's builtin complex numbers under the <code>_Complex</code> type, even more odd keywords like <code>register</code> or <code>_Noreturn</code>, or even variadic macros!</p><p>Either way, that's for another time, so have fun writing C, or don't!</p>
             </article>
             
-            <footer><hr/>Generated using <a href = "https://github.com/rats159/markdown_parser">rats159's Markdown Parser</a> at 11/23/2025</footer>
+            <footer><hr/>Generated using <a href = "https://github.com/rats159/ratsbloggenerator">rats159's Markdown Parser</a> at 2/1/2026</footer>
         </body>
     </html>
