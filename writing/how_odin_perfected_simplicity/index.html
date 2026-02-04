@@ -1,0 +1,83 @@
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="UTF-8" />
+            <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1.0"
+            />
+            <style>
+            	body {
+    background-color: #111;
+    font-family: sans-serif;
+    display: grid;
+    place-items: center;
+    color: #ccc;
+    line-height: 1.5em;
+    flex-direction: column;
+}
+
+h2 {
+    margin-top: 2em;
+}
+
+code {
+    font-family: "JetBrains Mono NL", monospace;
+}
+
+pre {
+    width: fit-content;
+    padding: 1em;
+    border-radius: 1em;
+    line-height: 1.25em;
+    white-space: pre-wrap;
+    background-color: #1e1e1e;
+    color: #bbbbbb;
+}
+
+:not(pre) > code {
+    background-color: #1e1e1e;
+    padding: 0.125em;
+}
+
+article {
+    max-width: 80ch;
+}
+
+.keyword {
+    color: #cf8e6d;
+}
+
+.type {
+    color: #6fafbd
+}
+
+.constant {
+    color: #c77dbb
+}
+
+.string {
+    color: #6aab73
+}
+
+.number {
+    color: #2aacb8
+}
+
+.comment {
+    color: #7a7e85
+}
+
+.call {
+    color: #56a8f5
+}
+            </style>
+        </head>
+        <body>
+            <article>
+            <h1>How Odin Perfected Simplicity</h1><p>Odin is a newer programming language that markets itself as "the C alternative for the Joy of Programming", and I think that's probably the best way to describe it. Its goal isn't to "improve C" with new layers or paradigms; there are no classes or methods, no "references", nor any automatic memory management. Instead, Odin aims to improve C by cleaning up the syntax, implementing sane defaults, and removing 70 years of tech debt, alongside a handful of new features that give you simpler ways to implement the same things you'd already hack in in C, like generics, modules, tagged unions, and a first-class concept of allocators.</p><p>Odin's features perfectly nail "simplicity". Any more, and Odin would become an overcomplicated mess of different features jammed together, but any less, and you'd force developers to write their own implementations of these features anyway. Odin is a very empirical language in this regard; features are added if there's a need for them, rather than on a whim of perceived usefulness, or for adherence to some principle. This is also why the standard library has all sorts of things you might not "expect" from a language's standard library, like a text editor, image loading, bindings for all of libc, a linear algebra library, or a library for working with ansi escape sequences. These are all useful libraries that the community would have created either way, so why not ship them with the language?</p><h2>Paradoxical Simplicity</h2><p>The issue with "simplicity" is that it's meaningless. More accurately, it has a ton of different meanings that are all conflicting. Python is simple because it handles everything for you, but C is simple because it doesn't do anything behind your back, while Java is simple because object-oriented programming "just works", meanwhile all of these languages are complex in their own ways! Python's internal behaviors can feel unintuitive and hamper performance, C does so little for you that even something as simple-sounding as a dynamic array can be a struggle to implement correctly, and Java was ruined by its users who think just one more layer of "Design Patterns" would solve their codebase.</p><p>Ideally, then, you'd find a balance of every definition. A language where you can transparently see everything that's happening, without bombarding the user with too many features, several layers of abstraction, or requiring escape hatches for every requirement that isn't on your language's "happy path". This is a hard balance to strike, since programming languages are fundamentally a compromise between humans and computers, so a simple and versatile syntax is antithetical to low abstractions, and if you want your language to feel streamlined, it's hard not to enforce the happy path, but there is a "goldilocks zone" that some languages manage to strike.</p><h2>Lua</h2><p>One such language that's loved for its simplicity is Lua. It's a tiny interpreted language that's trivial to embed inside other applications, and it's very simple. The reason that Lua is so simple is because it has a relatively simple syntax, designed to be able to represent as much as possible. At the core of this syntax is Tables, the data type in Lua used to represent lists, dictionaries, sets, and all structs/classes/custom types.</p><p>Tables are a very interesting system, but in reality, Lua struggles to work for real applications. Its systems are simple because they can be easily explained, but complex because performance becomes nontrivial, and the implementation has odd quirks and unexpected behavior, especially revolving around tables behaving as lists, and it's certainly not simple with regard to transparently seeing the underlying behavior. So then, what's another way to approach "simplicity"?</p><h2>Go</h2><p>Go does an amazing job at simplicity, and it's quite similar to Odin in its approach, so I won't harp on it for too long. In general, Go is really designed to fill a niche. It's somewhat high-level, with a garbage collector and a hefty runtime, but it laser-focuses on being amazing for servers and other highly concurrent tasks. It has first-class channels, green threads, and dead simple error handling, allowing you focus on what the code does, not how it looks.</p><h2>Odin</h2><p>Where Lua aims for simplicity by having minimal but extensible features, Odin achieves simplicity by empirically recognizing what you do need and giving you exactly that. For example, Odin doesn't have operator overloading. Instead, it has built-in types representing matrices, quaternions, complex numbers, and (mathematical) vectors, which covers a large amount of the need for overloading mathematical operators, as well as slices, dynamic arrays, and hash maps as language built-ins to cover the common collections, where you'd override indexing.  It's simple in the same way that C is simple, having very minimal abstraction over the direct operations, but it recognizes where C falls short, and extends the language to cover those cases. There is pretty much nothing you <em>can't</em> do in Odin that you can do in C.</p><p>A great example of Odin explicitly fixing a shortcoming of C is tagged unions. In C, unions are untagged, which means there's no information storing which type the current value is using. This makes sense in a case where some data may have multiple valid representations, like an IP Address, but in the majority of cases, you're using unions to represent a value that may be one of many different types. To do this effectively, you'd want to store a tag that represents which type is currently being used, something you have to do manually in C. Because of that, Odin's <code>union</code>s are tagged by default. If you want an untagged union, that is, of course representable, you just have to use the <code>#raw_union</code> directive on a struct. It's an amazing example of Odin preferring simplicity over extensibility.</p><p>While you totally <em>can</em> represent tagged unions with untagged ones, you want a tagged union often enough that it's worth having as the default. If you wanted to go full extensibility, you'd wind up going down a rabbit hole of implementing custom offsets on struct fields, and custom getters and setters and private fields and some way of getters returning an error, all just to wind up writing the same damn thing 95% of the time. Is there a case where custom field offsets would be helpful? Maybe, but I bet most of those cases are also covered by basic alignment and padding, which is trivial to adjust in Odin, again using directives, which apply to many more cases and are empirically useful more often.</p><p>You'll notice I've said "empirically" quite a lot, and that's because it's really a huge part of Odin's design. "It was found to be a thing people wanted, so it was added" is a huge driving force behind a lot of Odin's features, but they're still carefully selected to ensure there's nothing unnecessary. If you think this philosophy is interesting, maybe you should <a href="https://odin-lang.org">check out Odin</a>. Like I said at the start, it's really primarily designed as a C alternative, but without all the shortcomings of C. It doesn't really change the good parts of C, or suggest new paradigms over the top of C, it just clears up the mistakes.</p>
+            </article>
+            
+            <footer><hr/>Generated using <a href = "https://github.com/rats159/ratsbloggenerator">rats159's Markdown Parser</a> at 2/4/2026</footer>
+        </body>
+    </html>
