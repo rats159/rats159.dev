@@ -125,10 +125,10 @@ a {
 	target.rounds_confused += attack.rounds_confused
 }
 </code></pre><p>And again, this code is "fine", it would work and is readable, but there's definetly room to improve. Ideally, there'd be an enum to represent status effects, that way new ones can be added easily, and represnted without modifying attacks or pokemon, so let's do just that:</p><pre class='odin'><code><span class="type">Status_Effect_Type</span> :: <span class="keyword">enum</span> {
-	<span class="type">Poison</span>,
-	<span class="type">Paralysis</span>,
+	<span class="constant">Poison</span>,
+	<span class="constant">Paralysis</span>,
 	<span class="constant">Burn</span>,
-	<span class="type">Sleep</span>,
+	<span class="constant">Sleep</span>,
 	<span class="constant">Freeze</span>,
 	<span class="constant">Confusion</span>
 }
@@ -150,9 +150,9 @@ a {
 }
 
 <span class="type">Move</span> :: <span class="keyword">struct</span> {
-	<span class="constant">derived</span>: <span class="type">Any_Move</span>,
 	<span class="constant">name</span>: <span class="keyword">string</span>,
 	<span class="constant">accuracy</span>: <span class="keyword">f32</span>,
+	<span class="constant">derived</span>: <span class="type">Any_Move</span>,
 }
 
 <span class="type">Attack</span> :: <span class="keyword">struct</span> {
@@ -227,6 +227,6 @@ scavenge := <span class="type">Move</span> {<span class="string">"Scavenge"</spa
 </code></pre><p>I'll end it here, because this was just a demonstation of how advanced this stuff can get. You might have noticed that passing callbacks feels a bit "functional", and our <code>self</code> combined with <code>data: rawptr</code> feels a bit like emulating subtype polymorphism. This is totally true, and it's because procedural programming is a very foundational paradigm, that other paradigms build on.</p><p>If I did have to make this much more complicated, I'd probably go for a components approach, similar to our <code>Compound_Move</code> but more generalized. Obviously pokemon has a bunch of random niche moves that do wild things, so you'd need to be storing a lot of state regardless. Some moves have accuracy calculated dynamically, some moves take more than one turn, and so on. Still, the idea generalizes.</p><p>At the end of the day, you can basically do anything with well-structured procedural code. It's explicit, it's direct, and it neatly represents what you're trying to say without leaving room for invalid states.</p>
             </article>
             
-            <footer><hr/>Generated using <a href = "https://github.com/rats159/ratsbloggenerator">rats159's Markdown Parser</a> at 2/1/2026</footer>
+            <footer><hr/><p>Generated using <a href = "https://github.com/rats159/ratsbloggenerator">rats159's Markdown Parser</a> at 2/1/2026</p><p>Last edited at 5/1/2026</p></footer>
         </body>
     </html>
